@@ -1879,6 +1879,11 @@ static inline u32_t isr_rx_conn_pkt_ack(struct pdu_data *pdu_data_tx,
 		break;
 
 	case PDU_DATA_LLCTRL_TYPE_ENC_RSP:
+		/* enable receive encryption (transmit turned
+		 * on when start enc resp from master is
+		 * received)
+		 */
+		_radio.conn_curr->enc_rx = 1;
 		/* pause data packet tx */
 		_radio.conn_curr->pause_tx = 1U;
 		break;
@@ -7455,12 +7460,6 @@ static inline void event_enc_prep(struct connection *conn)
 			 */
 			conn->ccm_rx.direction = 1;
 			conn->ccm_tx.direction = 0;
-
-			/* enable receive encryption (transmit turned
-			 * on when start enc resp from master is
-			 * received)
-			 */
-			conn->enc_rx = 1;
 
 			/* prepare the start enc req */
 			pdu_ctrl_tx->ll_id = PDU_DATA_LLID_CTRL;
