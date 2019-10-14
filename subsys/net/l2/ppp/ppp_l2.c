@@ -55,6 +55,30 @@ void ppp_l2_register_pkt_cb(ppp_l2_callback_t cb)
 }
 #endif
 
+static int ppp_l2_read_protocol(struct net_pkt *pkt, u16_t* protocol,
+				bool proto_compression)
+{
+    if (proto_compression) {
+	u8_t proto_byte;
+	int ret = net_pkt_read_u8(pkt, &proto_byte);
+	if (ret < 0) {
+	    return ret;
+	}
+	if (proto_byte & 1)
+	{
+	    *protocol = proto_byte;
+	    return ret;
+	}
+	*protocol = proto_byte << 8;
+	ret = net_pkt_read_u8(pkt, &proto_byte);
+	if (ret < 0) {
+	    return ret;
+	}
+	*protocol |= proto_byte;
+	return ret;
+    }
+    return net_pkt_read_be16(pkt, protocol);
+}
 static enum net_verdict process_ppp_msg(struct net_if *iface,
 					struct net_pkt *pkt)
 {
@@ -68,7 +92,9 @@ static enum net_verdict process_ppp_msg(struct net_if *iface,
 		goto quit;
 	}
 
-	ret = net_pkt_read_be16(pkt, &protocol);
+	ret = ppp_l2_read_protocol(pkt, &protocol,
+				   ctx->lcp.my_accepted.negotiate_proto_compression);
+
 	if (ret < 0) {
 		goto quit;
 	}
