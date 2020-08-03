@@ -57,6 +57,13 @@ const struct shell *shell_backend_dummy_get_ptr(void);
 const char *shell_backend_dummy_get_output(const struct shell *shell,
 					   size_t *sizep);
 
+/**
+ * @brief Clears the output buffer in the shell backend.
+ *
+ * @param shell		Shell pointer
+ */
+void shell_backend_dummy_clear_output(const struct shell *shell);
+
 #ifdef __cplusplus
 }
 #endif

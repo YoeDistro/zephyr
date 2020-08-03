@@ -123,3 +123,12 @@ const char *shell_backend_dummy_get_output(const struct shell *shell,
 
 	return sh_dummy->buf;
 }
+
+void shell_backend_dummy_clear_output(const struct shell *shell)
+{
+	struct shell_dummy *sh_dummy;
+
+	sh_dummy = (struct shell_dummy *)shell->iface->ctx;
+	sh_dummy->buf[0] = '\0';
+	sh_dummy->len = 0;
+}

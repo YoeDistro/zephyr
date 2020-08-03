@@ -327,7 +327,7 @@ static void test_shell_fprintf(void)
 	zassert_not_null(shell, "Failed to get shell");
 
 	/* Clear the output buffer */
-	shell_backend_dummy_get_output(shell, &size);
+	shell_backend_dummy_clear_output(shell);
 
 	shell_fprintf(shell, SHELL_VT100_COLOR_DEFAULT, "testing %d %s %c",
 		      1, "2", '3');
@@ -374,6 +374,9 @@ static void test_raw_arg(void)
 
 void test_main(void)
 {
+	/* Let the shell backend initialize. */
+	k_usleep(10);
+
 	ztest_test_suite(shell_test_suite,
 			ztest_1cpu_unit_test(test_cmd_help),
 			ztest_unit_test(test_cmd_clear),
