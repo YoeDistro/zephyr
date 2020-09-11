@@ -139,7 +139,7 @@ Configuration Options
 
 Related configuration options:
 
-* None
+* :option:`MEM_SLAB_TRACE_MAX_UTILIZATION`
 
 API Reference
 *************
